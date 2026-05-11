@@ -19,7 +19,7 @@ public class ARItemController : MonoBehaviour
     
     [Header("Inteligencia Artificial")]
     public bool useFaceTracking = false;
-    public float faceScaleMultiplier = 150f; // Ajusta este valor si el sombrero es muy grande o chico con la IA
+    public float faceScaleMultiplier = 5f; // Ajustado para imágenes 2D (PNGs) en vez de modelos 3D
     
     [Tooltip("Ajusta donde se pone el accesorio respecto a la cara (X: lados, Y: arriba/abajo, Z: profundidad)")]
     public Vector3 trackingOffset = new Vector3(0f, 0.5f, 0f);

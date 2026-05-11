@@ -67,13 +67,16 @@ public class FaceTrackerBridge : MonoBehaviour
             nextSendTime = Time.time + sendRate;
         }
 
-        // Actualizar el ARItemController si existe y esta en modo automatico
-        ARItemController arItem = Object.FindFirstObjectByType<ARItemController>();
-        if (arItem != null && arItem.useFaceTracking)
+        // Actualizar todos los ARItemControllers activos
+        if (faceDetected)
         {
-            if (faceDetected)
+            ARItemController[] arItems = Object.FindObjectsByType<ARItemController>(FindObjectsSortMode.None);
+            foreach (var arItem in arItems)
             {
-                arItem.UpdateFromFaceTracking(targetFaceX, targetFaceY, targetFaceScale);
+                if (arItem != null && arItem.useFaceTracking)
+                {
+                    arItem.UpdateFromFaceTracking(targetFaceX, targetFaceY, targetFaceScale);
+                }
             }
         }
     }

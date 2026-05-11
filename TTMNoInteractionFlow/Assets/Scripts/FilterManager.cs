@@ -27,6 +27,16 @@ public class FilterManager : MonoBehaviour
     public AudioClip sound90s;
     public AudioClip soundActual;
 
+    [Header("Props (Accesorios) por Epoca")]
+    [Tooltip("Asigna los GameObjects (imágenes) que pertenecen a los años 50")]
+    public GameObject[] props50s;
+    [Tooltip("Asigna los GameObjects (imágenes) que pertenecen a los años 70")]
+    public GameObject[] props70s;
+    [Tooltip("Asigna los GameObjects (imágenes) que pertenecen a los años 90")]
+    public GameObject[] props90s;
+    [Tooltip("Asigna los GameObjects (imágenes) que pertenecen a la época actual")]
+    public GameObject[] propsActual;
+
     [Header("Configuracion de Audio")]
     [Tooltip("Volumen de los efectos de sonido (0 a 1)")]
     [Range(0f, 1f)]
@@ -74,6 +84,41 @@ public class FilterManager : MonoBehaviour
             profile90s,
             profileActual
         };
+
+        // Auto-asignar props por nombre si el usuario no lo ha hecho en el Inspector
+        AutoAssignProps();
+
+        // Ocultar todos los props al iniciar
+        DisableAllProps();
+    }
+
+    private void AutoAssignProps()
+    {
+        if (props50s == null || props50s.Length == 0)
+        {
+            var p1 = GameObject.Find("50s sombrero");
+            var p2 = GameObject.Find("Corbatín");
+            var p3 = GameObject.Find("Moustache");
+            
+            System.Collections.Generic.List<GameObject> list50 = new System.Collections.Generic.List<GameObject>();
+            if (p1) list50.Add(p1);
+            if (p2) list50.Add(p2);
+            if (p3) list50.Add(p3);
+            props50s = list50.ToArray();
+        }
+
+        // El usuario dijo "80s", lo asignaremos a la época 70s o 90s. 
+        // Vamos a asignarlo a props70s temporalmente ya que las épocas son 50, 70, 90.
+        if (props70s == null || props70s.Length == 0)
+        {
+            var p4 = GameObject.Find("Aretes");
+            var p5 = GameObject.Find("Gafa");
+            
+            System.Collections.Generic.List<GameObject> list70 = new System.Collections.Generic.List<GameObject>();
+            if (p4) list70.Add(p4);
+            if (p5) list70.Add(p5);
+            props70s = list70.ToArray();
+        }
     }
 
     /// <summary>
@@ -107,10 +152,43 @@ public class FilterManager : MonoBehaviour
             return;
         }
 
+        // Mostrar los props correctos
+        UpdatePropsVisibility(index);
+
         // Reproducir sonido tematico de la epoca (breve y a volumen bajo)
         PlayEraSound(index);
 
         Debug.Log($"Filtro cambiado a: {eraNames[index]}");
+    }
+
+    private void DisableAllProps()
+    {
+        SetPropsActive(props50s, false);
+        SetPropsActive(props70s, false);
+        SetPropsActive(props90s, false);
+        SetPropsActive(propsActual, false);
+    }
+
+    private void UpdatePropsVisibility(int index)
+    {
+        DisableAllProps();
+
+        switch (index)
+        {
+            case 0: SetPropsActive(props50s, true); break;
+            case 1: SetPropsActive(props70s, true); break;
+            case 2: SetPropsActive(props90s, true); break;
+            case 3: SetPropsActive(propsActual, true); break;
+        }
+    }
+
+    private void SetPropsActive(GameObject[] props, bool isActive)
+    {
+        if (props == null) return;
+        foreach (var prop in props)
+        {
+            if (prop != null) prop.SetActive(isActive);
+        }
     }
 
     /// <summary>
